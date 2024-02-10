@@ -1,8 +1,12 @@
-import Form from "@/components/Form";
-import Image from "next/image";
+import Form from '@/components/Form'
+import Navbar from '@/components/Navbar'
+import Image from 'next/image'
 
 export default function Home() {
   return (
- <main><Form/></main>
-  );
+    <main>
+      <Navbar />
+      <main>No forms created till now</main>
+    </main>
+  )
 }

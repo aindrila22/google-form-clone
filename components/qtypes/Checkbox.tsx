@@ -25,8 +25,11 @@ const Checkbox = () => {
   }
 
   return (
-    <div className="w-full px-8 py-1 mb-6">
-      <button className="my-4" onClick={addCheckboxInput}>
+    <div className="w-full md:px-8 px-2 grid place-items-center md:block py-1 mb-6">
+      <button
+        className="my-4 text-[#29A0B1] font-bold"
+        onClick={addCheckboxInput}
+      >
         Add Multiple Checkboxes
       </button>
 
@@ -49,7 +52,12 @@ const Checkbox = () => {
               className="focus:border-b focus:border-gray-400 outline-none"
             />
           </label>
-          <button onClick={() => removeCheckboxInput(index)}>Remove</button>
+          <button
+            className="text-pink-800 font-medium"
+            onClick={() => removeCheckboxInput(index)}
+          >
+            Remove
+          </button>
         </div>
       ))}
     </div>

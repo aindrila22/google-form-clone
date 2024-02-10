@@ -23,8 +23,8 @@ const Choice = () => {
   }
 
   return (
-    <div className="w-full px-8 py-1 mb-6">
-      <button className="my-4" onClick={addRadioInput}>
+    <div className="w-full px-2 grid place-items-center md:block lg:px-8 py-1 mb-6">
+      <button className="my-4 text-[#29A0B1] font-bold" onClick={addRadioInput}>
         Add Multiple Choices
       </button>
 
@@ -47,7 +47,12 @@ const Choice = () => {
               className="focus:border-b focus:border-gray-400 outline-none"
             />
           </label>
-          <button onClick={() => removeRadioInput(index)}>Remove</button>
+          <button
+            className="text-pink-800 font-medium"
+            onClick={() => removeRadioInput(index)}
+          >
+            Remove
+          </button>
         </div>
       ))}
     </div>
