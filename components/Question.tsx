@@ -1,5 +1,9 @@
+'use client'
+
 import { Select } from 'antd'
-import React, { useState } from 'react'
+import React from 'react'
+import { useDispatch } from 'react-redux'
+import { updateQuestionTitle, updateQuestionType } from '@/redux/formSlice'
 import ShortAnswer from './qtypes/ShortAnswer'
 import Choice from './qtypes/Choice'
 import Paragraph from './qtypes/Paragraph'
@@ -33,23 +37,28 @@ const data = [
 const Question = ({
   index,
   value,
-  onUpdate,
   addQuestion,
   handleDelete,
   isActiveQuestion,
-}: any) => {
-  const [qType, setQtype] = useState<any>()
-  const [questionTitle, setQuestionTitle] = useState(value)
+}: {
+  index: number
+  value: { title: string; type: string; choices?: string[] | undefined }
+  addQuestion: () => void
+  handleDelete: () => void
+  isActiveQuestion: boolean
+}) => {
+  const dispatch = useDispatch()
+  const { title, type } = value // Assuming value contains title and type
 
   const handleChange = (newValue: string) => {
-    setQuestionTitle(newValue)
-    onUpdate(index, newValue)
+    dispatch(updateQuestionTitle({ index, title: newValue }))
   }
 
   const handleTypeChange = (value: string) => {
-    const x = data?.find((elem) => elem.title === value)
-    setQtype(x)
+    dispatch(updateQuestionType({ index, type: value }))
   }
+
+  const qType = data.find((elem) => elem.title === type)
 
   return (
     <div className="flex md:flex-row flex-col justify-center items-center w-full max-w-3xl mx-auto">
@@ -59,17 +68,17 @@ const Question = ({
         <div className="w-full md:px-6 px-2 flex md:flex-row flex-col md:justify-between justify-center items-center gap-8 py-6">
           <input
             type="text"
-            value={questionTitle}
+            value={title}
             onChange={(e) => handleChange(e.target.value)}
             placeholder="Question"
             required
-            className="text-base px-4 outline-none capitalize border-b bg-gray-100
-        focus:border-b-2 border-gray-400 pt-3 pb-2 w-full focus:border-[#29A0B1]"
+            className="text-base px-4 outline-none capitalize border-b bg-gray-100 focus:border-b-2 border-gray-400 pt-3 pb-2 w-full focus:border-[#29A0B1]"
           />
           <Select
             placeholder="Select Question Type"
             style={{ width: 300 }}
             onChange={handleTypeChange}
+            value={type}
             options={[
               { value: 'Short Answer', label: 'Short Answer' },
               { value: 'Paragraph', label: 'Paragraph' },

@@ -1,25 +1,53 @@
 'use client'
 
+import { updateQuestionValue } from '@/redux/formSlice'
+import { RootState } from '@/redux/store'
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 const Choice = () => {
   const [radioInputs, setRadioInputs] = useState(['Option 1'])
+  const dispatch = useDispatch()
+  const activeQuestionIndex = useSelector(
+    (state: RootState) => state.form.activeQuestionIndex,
+  )
 
   const addRadioInput = () => {
     const newRadioInputs = [...radioInputs, `Option ${radioInputs.length + 1}`]
     setRadioInputs(newRadioInputs)
+    dispatch(
+      updateQuestionValue({
+        index: activeQuestionIndex,
+        value: newRadioInputs,
+      }),
+    )
   }
 
   const removeRadioInput = (index: any) => {
     const updatedRadioInputs = [...radioInputs]
     updatedRadioInputs.splice(index, 1)
     setRadioInputs(updatedRadioInputs)
-  }
 
-  const handleInputChange = (index: any, value: any) => {
+    // Pass the updated array without the deleted option
+    dispatch(
+      updateQuestionValue({
+        index: activeQuestionIndex,
+        value: updatedRadioInputs,
+      }),
+    )
+  }
+  const handleInputChange = (index: number, value: any) => {
     const updatedRadioInputs = [...radioInputs]
     updatedRadioInputs[index] = value
     setRadioInputs(updatedRadioInputs)
+
+    // Pass only the updated option to the action
+    dispatch(
+      updateQuestionValue({
+        index: activeQuestionIndex,
+        value: updatedRadioInputs, // Pass the updated option
+      }),
+    )
   }
 
   return (

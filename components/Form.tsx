@@ -2,36 +2,46 @@
 
 import Nav from '@/components/Navbar'
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  addQuestion,
+  deleteQuestion,
+  setTitle,
+  setDesc,
+  updateQuestionValue,
+} from '@/redux/formSlice'
 import Question from './Question'
 import Edit from './Edit'
+import { RootState } from '@/redux/store'
 
 const Form = () => {
-  const [title, setTitle] = useState<string>('Untitled Form')
-  const [desc, setDesc] = useState<string>('')
-  const [questions, setQuestions] = useState<Array<string>>([])
-  const [activeQuestionIndex, setActiveQuestionIndex] = useState<number | null>(
-    null,
+  const dispatch = useDispatch()
+  const title = useSelector((state: RootState) => state.form.title)
+  const desc = useSelector((state: RootState) => state.form.desc)
+  const questions = useSelector((state: RootState) => state.form.questions)
+  console.log(questions)
+  const activeQuestionIndex = useSelector(
+    (state: RootState) => state.form.activeQuestionIndex,
   )
 
-  const addQuestion = () => {
-    setQuestions([...questions, ''])
-    setActiveQuestionIndex(questions.length)
+  const handleTitleChange = (e: any) => {
+    dispatch(setTitle(e.target.value))
   }
 
-  const updateQuestion = (index: number, value: string) => {
-    const updatedQuestions = [...questions]
-    updatedQuestions[index] = value
-    setQuestions(updatedQuestions)
-  }
-  const deleteQuestion = (index: number) => {
-    const updatedQuestions = [...questions]
-    updatedQuestions.splice(index, 1)
-    setQuestions(updatedQuestions)
-    if (activeQuestionIndex !== null) {
-      setActiveQuestionIndex(index === questions.length - 1 ? index - 1 : null)
-    }
+  const handleDescChange = (e: any) => {
+    dispatch(setDesc(e.target.value))
   }
 
+  const handleAddQuestion = () => {
+    dispatch(addQuestion())
+  }
+
+  const handleDeleteQuestion = (index: number) => {
+    dispatch(deleteQuestion(index))
+  }
+  const handleQuestionUpdate = (index: number, value: any) => {
+    dispatch(updateQuestionValue({ index, value }))
+  }
   return (
     <div>
       <Nav />
@@ -43,7 +53,7 @@ const Form = () => {
                 <div className="w-full px-6 py-2">
                   <input
                     type="text"
-                    onChange={(e) => setTitle(e.target.value)}
+                    onChange={handleTitleChange}
                     value={title ?? ''}
                     required
                     className="text-3xl outline-none font-bold capitalize border-b 
@@ -53,7 +63,7 @@ const Form = () => {
                 <div className="w-full px-6 py-1 mb-6">
                   <input
                     type="text"
-                    onChange={(e) => setDesc(e.target.value)}
+                    onChange={handleDescChange}
                     value={desc ?? ''}
                     required
                     placeholder="Form Description"
@@ -66,9 +76,11 @@ const Form = () => {
             <div>
               {questions.length === 0 && (
                 <Edit
-                  handleAdd={addQuestion}
+                  handleAdd={handleAddQuestion}
                   show
-                  handleDelete={() => deleteQuestion(questions.length - 1)}
+                  handleDelete={() =>
+                    handleDeleteQuestion(questions.length - 1)
+                  }
                 />
               )}
             </div>
@@ -79,9 +91,8 @@ const Form = () => {
                 key={index}
                 index={index}
                 value={question}
-                onUpdate={updateQuestion}
-                addQuestion={addQuestion}
-                handleDelete={() => deleteQuestion(questions.length - 1)}
+                addQuestion={handleAddQuestion}
+                handleDelete={() => handleDeleteQuestion(questions.length - 1)}
                 isActiveQuestion={index === activeQuestionIndex}
               />
             ))}
