@@ -9,6 +9,7 @@ import {
   setTitle,
   setDesc,
   updateQuestionValue,
+  setActiveQuestionIndex,
 } from '@/redux/formSlice'
 import Question from './Question'
 import Edit from './Edit'
@@ -39,9 +40,10 @@ const Form = () => {
   const handleDeleteQuestion = (index: number) => {
     dispatch(deleteQuestion(index))
   }
-  const handleQuestionUpdate = (index: number, value: any) => {
-    dispatch(updateQuestionValue({ index, value }))
+  const handleQuestionClick = (index: number) => {
+    dispatch(setActiveQuestionIndex(index))
   }
+
   return (
     <div>
       <Nav />
@@ -88,11 +90,12 @@ const Form = () => {
           <div className="relative">
             {questions.map((question, index) => (
               <Question
+                onclick={() => handleQuestionClick(index)}
                 key={index}
                 index={index}
                 value={question}
                 addQuestion={handleAddQuestion}
-                handleDelete={() => handleDeleteQuestion(questions.length - 1)}
+                handleDelete={() => handleDeleteQuestion(index)}
                 isActiveQuestion={index === activeQuestionIndex}
               />
             ))}

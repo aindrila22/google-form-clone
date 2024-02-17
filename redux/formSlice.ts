@@ -31,11 +31,16 @@ const formSlice = createSlice({
       state.desc = action.payload;
     },
     addQuestion(state) {
-      state.questions.push({
+      const newQuestion = {
         title: '',
         type: 'Short Answer', // Default type
-      });
-      state.activeQuestionIndex = state.questions.length - 1;
+      };
+    
+      return {
+        ...state,
+        questions: [...state.questions, newQuestion],
+        activeQuestionIndex: state.questions.length, // Update activeQuestionIndex
+      };
     },
     updateQuestionTitle(state, action: PayloadAction<{ index: number; title: string }>) {
       const { index, title } = action.payload;

@@ -1,8 +1,21 @@
 'use client'
-import React, { useState } from 'react'
+import { updateQuestionValue } from '@/redux/formSlice'
+import { RootState } from '@/redux/store'
+import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 const Checkbox = () => {
   const [checkboxInputs, setCheckboxInputs] = useState(['Option 1'])
+  const [activeIndex, setActiveIndex] = useState<number | null>(null) // State to track active index locally
+  const dispatch = useDispatch()
+  const activeQuestionIndex = useSelector(
+    (state: RootState) => state.form.activeQuestionIndex,
+  )
+
+  // Update local active index when Redux active index changes
+  useEffect(() => {
+    setActiveIndex(activeQuestionIndex)
+  }, [activeQuestionIndex])
 
   const addCheckboxInput = () => {
     const newCheckboxInputs = [
@@ -10,18 +23,42 @@ const Checkbox = () => {
       `Option ${checkboxInputs.length + 1}`,
     ]
     setCheckboxInputs(newCheckboxInputs)
+    if (activeIndex !== null) {
+      dispatch(
+        updateQuestionValue({
+          index: activeIndex, // Use local active index
+          value: newCheckboxInputs,
+        }),
+      )
+    }
   }
 
-  const removeCheckboxInput = (index: any) => {
+  const removeCheckboxInput = (index: number) => {
     const updatedCheckboxInputs = [...checkboxInputs]
     updatedCheckboxInputs.splice(index, 1)
     setCheckboxInputs(updatedCheckboxInputs)
+    if (activeIndex !== null) {
+      dispatch(
+        updateQuestionValue({
+          index: activeIndex, // Use local active index
+          value: updatedCheckboxInputs,
+        }),
+      )
+    }
   }
 
-  const handleInputChange = (index: any, value: any) => {
+  const handleInputChange = (index: number, value: any) => {
     const updatedCheckboxInputs = [...checkboxInputs]
     updatedCheckboxInputs[index] = value
     setCheckboxInputs(updatedCheckboxInputs)
+    if (activeIndex !== null) {
+      dispatch(
+        updateQuestionValue({
+          index: activeIndex, // Use local active index
+          value: updatedCheckboxInputs,
+        }),
+      )
+    }
   }
 
   return (

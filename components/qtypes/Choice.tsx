@@ -7,47 +7,56 @@ import { useDispatch, useSelector } from 'react-redux'
 
 const Choice = () => {
   const [radioInputs, setRadioInputs] = useState(['Option 1'])
+  const [activeIndex, setActiveIndex] = useState<number | null>(null) // State to track active index locally
   const dispatch = useDispatch()
   const activeQuestionIndex = useSelector(
     (state: RootState) => state.form.activeQuestionIndex,
   )
 
+  // Update local active index when Redux active index changes
+  React.useEffect(() => {
+    setActiveIndex(activeQuestionIndex)
+  }, [activeQuestionIndex])
+
   const addRadioInput = () => {
     const newRadioInputs = [...radioInputs, `Option ${radioInputs.length + 1}`]
     setRadioInputs(newRadioInputs)
-    dispatch(
-      updateQuestionValue({
-        index: activeQuestionIndex,
-        value: newRadioInputs,
-      }),
-    )
+    if (activeIndex !== null) {
+      dispatch(
+        updateQuestionValue({
+          index: activeIndex, // Use local active index
+          value: newRadioInputs,
+        }),
+      )
+    }
   }
 
-  const removeRadioInput = (index: any) => {
+  const removeRadioInput = (index: number) => {
     const updatedRadioInputs = [...radioInputs]
     updatedRadioInputs.splice(index, 1)
     setRadioInputs(updatedRadioInputs)
-
-    // Pass the updated array without the deleted option
-    dispatch(
-      updateQuestionValue({
-        index: activeQuestionIndex,
-        value: updatedRadioInputs,
-      }),
-    )
+    if (activeIndex !== null) {
+      dispatch(
+        updateQuestionValue({
+          index: activeIndex, // Use local active index
+          value: updatedRadioInputs,
+        }),
+      )
+    }
   }
+
   const handleInputChange = (index: number, value: any) => {
     const updatedRadioInputs = [...radioInputs]
     updatedRadioInputs[index] = value
     setRadioInputs(updatedRadioInputs)
-
-    // Pass only the updated option to the action
-    dispatch(
-      updateQuestionValue({
-        index: activeQuestionIndex,
-        value: updatedRadioInputs, // Pass the updated option
-      }),
-    )
+    if (activeIndex !== null) {
+      dispatch(
+        updateQuestionValue({
+          index: activeIndex, // Use local active index
+          value: updatedRadioInputs,
+        }),
+      )
+    }
   }
 
   return (

@@ -2,7 +2,7 @@
 
 import { Select } from 'antd'
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { updateQuestionTitle, updateQuestionType } from '@/redux/formSlice'
 import ShortAnswer from './qtypes/ShortAnswer'
 import Choice from './qtypes/Choice'
@@ -10,6 +10,7 @@ import Paragraph from './qtypes/Paragraph'
 import Checkbox from './qtypes/Checkbox'
 import Dropdown from './qtypes/Dropdown'
 import Edit from './Edit'
+import { RootState } from '@/redux/store'
 
 const data = [
   {
@@ -40,12 +41,14 @@ const Question = ({
   addQuestion,
   handleDelete,
   isActiveQuestion,
+  onclick,
 }: {
   index: number
   value: { title: string; type: string; choices?: string[] | undefined }
   addQuestion: () => void
   handleDelete: () => void
   isActiveQuestion: boolean
+  onclick: any
 }) => {
   const dispatch = useDispatch()
   const { title, type } = value // Assuming value contains title and type
@@ -57,13 +60,22 @@ const Question = ({
   const handleTypeChange = (value: string) => {
     dispatch(updateQuestionType({ index, type: value }))
   }
-
+  const activeQuestionIndex = useSelector(
+    (state: RootState) => state.form.activeQuestionIndex,
+  )
   const qType = data.find((elem) => elem.title === type)
 
   return (
-    <div className="flex md:flex-row flex-col justify-center items-center w-full max-w-3xl mx-auto">
+    <div
+      onClick={onclick}
+      className="flex md:flex-row flex-col justify-center items-center w-full max-w-3xl mx-auto "
+    >
       <div
-        className={`border rounded-md my-6 border-gray-300 bg-white max-w-2xl shadow w-full grid place-items-center lg:place-items-start lg:ml-10 mx-auto`}
+        className={` rounded-md my-6 ${
+          activeQuestionIndex === index
+            ? 'border-l-4 border-[#29A0B1]'
+            : 'border border-gray-300'
+        }  bg-white max-w-2xl shadow w-full grid place-items-center lg:place-items-start lg:ml-10 mx-auto`}
       >
         <div className="w-full md:px-6 px-2 flex md:flex-row flex-col md:justify-between justify-center items-center gap-8 py-6">
           <input
